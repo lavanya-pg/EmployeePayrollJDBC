@@ -1,11 +1,7 @@
 package employeepayrolljdbc;
 
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,5 +128,22 @@ public class EmployeePayrollDBService {
         return 0;
     }
 
-
+    public EmployeePayrollData addEmployeeToPayroll(String name, String gender, double salary, LocalDate startDate) {
+        int employeeId = -1;
+        EmployeePayrollData employeePayrollData = null;
+		String sql = String.format("INSERT INTO employee_payroll (name, gender, salary, startDate) " +
+                "VALUES ('%s', '%s', '%s', '%s')", name, gender, salary, Date.valueOf(startDate));
+        try(Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement ();
+            int rowAffected = statement.executeUpdate(sql, statement.RETURN_GENERATED_KEYS);
+            if(rowAffected == 1) {
+                ResultSet resultSet = statement.getGeneratedKeys ();
+                if(resultSet.next()) employeeId = resultSet.getInt( 1);
+            }
+            employeePayrollData = new EmployeePayrollData(employeeId, name, salary, startDate);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employeePayrollData;
+    }
 }

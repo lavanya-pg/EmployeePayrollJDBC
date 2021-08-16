@@ -1,15 +1,16 @@
 package employeepayrolljdbc;
 
+
 import java.util.List;
+import java.util.Map;
 import java.time.LocalDate;
 import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class EmployeePayrollServiceTest {
-
 	@Test
-    public void given3EmployeesWhenWrittenToFileShouldMatchEmployeeEnteries(){
+	public void given3EmployeesWhenWrittenToFileShouldMatchEmployeeEnteries(){
         EmployeePayrollData[] arrayOfEmps = {
                 new EmployeePayrollData(1, "Jeff Bezos", 100000.0),
                 new EmployeePayrollData(2, "Bill Gates", 200000.0),
@@ -40,7 +41,7 @@ public class EmployeePayrollServiceTest {
     }
 
     @Test
-    public void givenDateRange_WhenRetrieved_ShouldMatchEmployeeCount() {
+    public void givenDateRangeWhenRetrievedShouldMatchEmployeeCount() {
         EmployeePayrollService employeePayrollService = new EmployeePayrollService();
         employeePayrollService.readEmployeePayrollData(EmployeePayrollService.IOService.DB_IO);
         LocalDate startDate = LocalDate.of(2018, 01, 01);
@@ -49,6 +50,25 @@ public class EmployeePayrollServiceTest {
                 employeePayrollService.readEmployeePayrollForDateRange(EmployeePayrollService
                         .IOService.DB_IO, startDate, endDate);
         Assert.assertEquals(3, employeePayrollData.size());
+    }
+
+    @Test
+    public void givenPayrollDataWhenAverageSalaryRetrievedByGenderShouldReturnProperValue() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        employeePayrollService.readEmployeePayrollData(EmployeePayrollService.IOService.DB_IO);
+        Map<String, Double> averageSalaryByGender = employeePayrollService
+                .readAverageSalaryByGender(EmployeePayrollService.IOService.DB_IO);
+        Assert.assertTrue(averageSalaryByGender.get("M").equals(2000000.00) &&
+                averageSalaryByGender.get("F").equals(3000000.00));
+    }
+
+    @Test
+    public void givenNewEmployee_WhenAdded_ShouldSyncWithDB() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        employeePayrollService.readEmployeePayrollData(EmployeePayrollService.IOService.DB_IO);
+        employeePayrollService.addEmployeeTOPayroll("Mark","M", 5000000.00, LocalDate.now());
+        boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Mark");
+        Assert.assertTrue(result);
     }
 
 
