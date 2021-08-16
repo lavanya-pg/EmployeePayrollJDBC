@@ -14,7 +14,7 @@ public class EmployeePayrollDBService {
 
 	private PreparedStatement employeePayrollDataStatement;
     private static EmployeePayrollDBService employeePayrollDBService;
-    private void EmployeePayrolDBService() {
+    private void EmployeePayrollDBService() {
     }
 
     public static EmployeePayrollDBService getInstance(){
@@ -26,7 +26,7 @@ public class EmployeePayrollDBService {
     private Connection getConnection() throws SQLException {
         String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?useSSL=false";
         String userName = "root";
-        String password = "Manali@123";
+        String password = "maya";
         Connection connection;
         System.out.println("Connectinng to database:" + jdbcURL);
         connection = DriverManager.getConnection(jdbcURL, userName, password);
